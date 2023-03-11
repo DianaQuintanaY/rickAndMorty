@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, useLocation, useNavigate} from 'react-router-dom';
 import './App.css';
-import Cards from './components/Cards.jsx';
-import Nav from './components/Nav';
-import {Routes,Route, useLocation, useNavigate} from 'react-router-dom';
-import About from './components/About';
-import Detail from './components/Detail';
-import Form from './components/Form';
+import Cards from './components/Cards/Cards';
+import Nav from './components/Nav/Nav';
+import About from './components/About/About';
+import Detail from './components/Detail/Detail';
+import Form from './components/Form/Form';
 import Favorites from './components/Favorites/Favorites';
+
+// Eliminar de favoritos tarjetas 
+import { useDispatch } from 'react-redux';
+import { deleteFavorites } from './redux/actions';
 
 
 function App () {
@@ -17,36 +21,40 @@ function App () {
   const username = 'ejemplo@gmail.com';
   const password = '1password';
 
-  function login(userData) {
+  const dispatch = useDispatch();
+
+  const login = (userData) => {
     if (userData.password === password && userData.username === username) {
-       setAccess(true);
-       navigate('/home');
+      setAccess(true);
+      navigate('/home');
     }
- };
- useEffect(() => { !access && navigate('/')}, [access]);
+  };
+  useEffect(() => { !access && navigate('/')}, [access]);
 
 
   const onSearch = (character) => {
-    if(characters.findIndex((item)=>{return item.id === Number(character)}) !== -1){
-      window.alert('Este personaje ya se encuentra agregado')
+    if(characters.find(item=> item.id === Number(character))){
+       window.alert('Este personaje ya se encuentra agregado')
     } else {
-    //  fetch(`https://rickandmortyapi.com/api/character/${character}`)
-        fetch(`http://localhost:3001/rickandmorty/onsearch/${character}`)
+      fetch(`http://localhost:3001/rickandmorty/onsearch/${character}`)
       .then((response) => response.json())
       .then((data) => {
-      if (data.name) {
-         setCharacters((oldChars) => [...oldChars, data]);
-      } else {
-         window.alert('No hay personajes con ese ID');
-      }
+        if (data.name) {
+          setCharacters((oldChars) => [...oldChars, data]);
+        } else {
+          window.alert('No hay personajes con ese ID');
+        }
       });
     }
   };
-  const onClose = (character) => {
-    const charactersFilter = characters.filter(item => { return  item.id !== character});
-    setCharacters(charactersFilter)
 
+  const onClose = (character) => {
+    const charactersFilter = characters.filter(item => item.id !== character);
+    setCharacters(charactersFilter);
+    // Eliminar de favoritos
+    dispatch(deleteFavorites(character))
   };
+
   return (
     <div className='App' style={{ padding: '25px' }}>
       {location.pathname === '/'? <Form login={login} />: <Nav onSearch={onSearch} />}

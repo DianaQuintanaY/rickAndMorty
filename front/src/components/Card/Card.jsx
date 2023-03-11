@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import {addFavorites, deleteFavorites} from "../redux/actions";
+import {addFavorites, deleteFavorites} from "../../redux/actions";
 import {useDispatch, useSelector} from 'react-redux'
 import { useState, useEffect } from 'react';
+import "./card.css"
 // import { useParams } from "react-router-dom";
 
 
@@ -26,8 +27,7 @@ export default function Card(props) {
             name:props.name,
             species:props.species,
             gender:props.gender,
-            image:props.image,
-            onClose: props.onClose
+            image:props.image
          }))
          
       }
@@ -42,17 +42,28 @@ export default function Card(props) {
    }, [myFavorites])
 
    return (
-      <div>
+      <div className="card">
+
+         <div>
          {isFav ? (<button onClick={handleFavorite}>❤️</button>) 
                 : (<button onClick={handleFavorite}>🤍</button>)
          }
          <button id={props.id} onClick={onClose}>X</button>
-         <Link to={`/detail/${props.id}`}>
-            <h2 className="card-title">{props.name}</h2>
-         </Link>
-         <h2>{props.species}</h2>
-         <h2>{props.gender}</h2>
-         <img  src={props.image} alt="" />
+         </div>
+
+         <figure>
+            <img  src={props.image} alt="" />
+            <figcaption>
+               <Link to={`/detail/${props.id}`} className="card-title">
+                  <h2>{props.name}</h2>
+               </Link>
+            </figcaption>
+         </figure>
+
+         <div className="info">
+            <h2>{props.species}</h2>
+            <h2>{props.gender}</h2>
+         </div>
       </div>
    );
 };

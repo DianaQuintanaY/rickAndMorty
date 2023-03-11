@@ -1,5 +1,5 @@
 import React from "react";
-import validate from "./validation";
+import validate from "../validation";
 
 export default function Form({login}) {
     const [userData, setUserData] = React.useState({ username: '', password: '' });

@@ -6,7 +6,6 @@ import { useEffect } from 'react';
     const {detailId} = useParams();
     const [character, setCharacter] = useState({});
     useEffect(() => {
-       // fetch(`https://rickandmortyapi.com/api/character/${detailId}`)
         fetch(`http://localhost:3001/rickandmorty/detail/${detailId}`)
           .then((response) => response.json())
           .then((char) => {
@@ -21,7 +20,6 @@ import { useEffect } from 'react';
           });
         return setCharacter({});
       }, [detailId]);
-    console.log(character);
     return (
         <div>
             <div>
@@ -29,11 +27,10 @@ import { useEffect } from 'react';
                 <p>STATUS: {character?.status}</p>
                 <p>ESPECIE: {character?.species}</p>
                 <p>GENERO: {character?.gender}</p>
-                <p>ORIGIN: {character?.origin?.name}</p>
+                <p>ORIGIN: {character?.origin}</p>
             </div>
             <img alt='' src={character.image} width='300px'/>
             <button><Link to='/home'>HOME</Link></button>
         </div>
-
     );
  }
